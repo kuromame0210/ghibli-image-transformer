@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.21",
-    "canvas": "^2.11.2",
-    "jimp": "^0.22.12",
     "lucide-react": "^0.469.0",
     "next": "15.3.3",
     "node-fetch": "^3.3.2",
