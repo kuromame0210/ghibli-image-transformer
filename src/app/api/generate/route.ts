@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      const response = await apiResponse.json()
+      const response = await apiResponse.json() as { data: Array<{ b64_json?: string; url?: string }> }
       const imageData = response.data[0]
       
       if (!imageData) {
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const response = await apiResponse.json()
+    const response = await apiResponse.json() as { data: Array<{ b64_json?: string; url?: string }> }
     const imageData = response.data[0]
     
     if (!imageData) {

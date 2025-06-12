@@ -1,4 +1,3 @@
-import { CustomizationOptions } from '@/app/page'
 
 export interface PromptTemplate {
   basePrompt: string

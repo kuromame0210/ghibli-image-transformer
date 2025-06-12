@@ -115,8 +115,13 @@ export default function DebugPanel({ onDirectGenerate, debugInfo }: DebugPanelPr
           カスタムプロンプトで生成
         </button>
 
-        <div className="text-xs text-gray-600">
+        <div className="text-xs text-gray-600 space-y-2">
           <p>APIリクエスト/レスポンスの詳細とテスト用カスタムプロンプトを確認できます</p>
+          <div className="p-2 bg-yellow-50 border border-yellow-200 rounded">
+            <p className="font-semibold text-yellow-800">💰 コスト情報</p>
+            <p className="text-yellow-700">1回の変換: 約26円 (高品質)</p>
+            <p className="text-yellow-600">中品質: 約6円 | 低品質: 約1.5円</p>
+          </div>
         </div>
       </div>
     </div>
