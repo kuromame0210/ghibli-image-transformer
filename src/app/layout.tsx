@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ジブリ風結婚式画像ジェネレーター',
-  description: 'スタジオジブリ風の魔法的な結婚式シーンを生成するアプリケーション',
+  title: 'ジブリ風画像変換ジェネレータ',
+  description: 'スタジオジブリ風の画像を生成するジェネレーター',
 }
 
 export default function RootLayout({

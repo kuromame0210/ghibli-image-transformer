@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { generateGhibliWeddingPrompt } from '@/lib/promptTemplates'
-import { Sparkles, Download, RefreshCw } from 'lucide-react'
+import { Sparkles, Download, RefreshCw, Edit3 } from 'lucide-react'
 
 interface ImageGeneratorProps {
   uploadedImage: string | null
@@ -21,6 +21,8 @@ export default function ImageGenerator({
 }: ImageGeneratorProps) {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [customPrompt, setCustomPrompt] = useState<string>(generateGhibliWeddingPrompt())
+  const [useCustomPrompt, setUseCustomPrompt] = useState<boolean>(false)
 
   const handleGenerate = async () => {
     if (!uploadedImage) {
@@ -32,7 +34,7 @@ export default function ImageGenerator({
     setError(null)
 
     try {
-      const prompt = generateGhibliWeddingPrompt()
+      const prompt = useCustomPrompt && customPrompt.trim() ? customPrompt : generateGhibliWeddingPrompt()
 
       // デバッグ情報を送信
       if (onDebugInfo) {
@@ -61,7 +63,13 @@ export default function ImageGenerator({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        console.error('API Error Response:', errorData)
+        console.error('API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url,
+          headers: Object.fromEntries(response.headers.entries()),
+          errorData
+        })
         throw new Error(`画像生成に失敗しました (${response.status}): ${errorData.error || 'Unknown error'}`)
       }
 
@@ -89,7 +97,16 @@ export default function ImageGenerator({
       onGenerated(data.imageUrl)
       
     } catch (err) {
-      console.error('Generation error:', err)
+      console.error('Generation error:', {
+        error: err,
+        message: err instanceof Error ? err.message : '画像生成に失敗しました',
+        stack: err instanceof Error ? err.stack : null,
+        name: err instanceof Error ? err.name : 'Unknown',
+        cause: err instanceof Error ? (err as any).cause : null,
+        timestamp: new Date().toISOString(),
+        uploadedImagePresent: !!uploadedImage,
+        promptUsed: useCustomPrompt && customPrompt.trim() ? customPrompt : 'default'
+      })
       
       // エラーのデバッグ情報を送信
       if (onDebugInfo) {
@@ -98,7 +115,11 @@ export default function ImageGenerator({
           timestamp: new Date().toISOString(),
           data: {
             error: err instanceof Error ? err.message : '画像生成に失敗しました',
-            stack: err instanceof Error ? err.stack : null
+            stack: err instanceof Error ? err.stack : null,
+            name: err instanceof Error ? err.name : 'Unknown',
+            cause: err instanceof Error ? (err as any).cause : null,
+            uploadedImagePresent: !!uploadedImage,
+            promptUsed: useCustomPrompt && customPrompt.trim() ? customPrompt : 'default'
           }
         })
       }
@@ -138,6 +159,37 @@ export default function ImageGenerator({
         <h2 className="text-xl font-semibold text-ghibli-brown">
           ジブリ風画像生成
         </h2>
+      </div>
+
+      {/* Prompt Customization */}
+      <div className="mb-6 space-y-4">
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="useCustomPrompt"
+            checked={useCustomPrompt}
+            onChange={(e) => setUseCustomPrompt(e.target.checked)}
+            className="w-4 h-4 text-ghibli-green bg-gray-100 border-gray-300 rounded focus:ring-ghibli-green focus:ring-2"
+          />
+          <label htmlFor="useCustomPrompt" className="flex items-center gap-2 text-sm font-medium text-ghibli-brown cursor-pointer">
+            <Edit3 className="w-4 h-4" />
+            カスタムプロンプトを使用
+          </label>
+        </div>
+        
+        {useCustomPrompt && (
+          <div>
+            <textarea
+              value={customPrompt}
+              onChange={(e) => setCustomPrompt(e.target.value)}
+              placeholder="生成したい画像のスタイルや内容を詳しく説明してください...&#10;例：柔らかい水彩画のような、緑豊かな森の中の幻想的なシーン"
+              className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghibli-green focus:border-transparent resize-none text-sm"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              空欄の場合はデフォルトのジブリ風プロンプトが使用されます
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Generation Button */}

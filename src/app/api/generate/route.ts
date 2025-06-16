@@ -142,9 +142,27 @@ export async function POST(request: NextRequest) {
       )
     }
   } catch (error: any) {
+    console.error('API Route Error Details:', {
+      error,
+      message: error?.message || 'Unknown error occurred',
+      stack: error?.stack,
+      name: error?.name,
+      cause: (error as any)?.cause,
+      timestamp: new Date().toISOString(),
+      environment: {
+        nodeEnv: process.env.NODE_ENV,
+        hasOpenAIKey: !!process.env.OPENAI_API_KEY,
+        openAIKeyLength: process.env.OPENAI_API_KEY?.length || 0
+      }
+    })
+    
     const errorMessage = error?.message || 'Unknown error occurred'
     return NextResponse.json(
-      { error: `画像編集エラー: ${errorMessage}` },
+      { 
+        error: `画像編集エラー: ${errorMessage}`,
+        details: error?.stack || 'No stack trace available',
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     )
   }

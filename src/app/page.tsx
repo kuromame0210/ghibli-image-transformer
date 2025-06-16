@@ -46,7 +46,7 @@ export default function Home() {
         <div className="text-center mb-12">
           <div className="flex justify-center items-center gap-3 mb-4">
             <h1 className="text-4xl font-bold text-ghibli-brown">
-              AI結婚式画像トランスフォーマー
+              ジブリ風画像変換ジェネレータ
             </h1>
             <Sparkles className="text-ghibli-blue w-8 h-8" />
           </div>
